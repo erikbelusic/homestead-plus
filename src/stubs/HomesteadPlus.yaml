@@ -1,5 +1,5 @@
 ---
-ip: "192.168.10.10"
+ip: "192.168.10.12"
 memory: 2048
 cpus: 1
 provider: virtualbox
@@ -14,11 +14,11 @@ folders:
       to: /home/vagrant/Code
 
 sites:
-    - map: homestead.app
+    - map: homestead-plus.app
       to: /home/vagrant/Code/Laravel/public
 
 databases:
-    - homestead
+    - homestead-plus
 
 variables:
     - key: APP_ENV

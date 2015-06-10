@@ -1,4 +1,4 @@
-<?php namespace Laravel\Homestead;
+<?php namespace Belusic\HomesteadPlus;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Command\Command;
@@ -15,7 +15,7 @@ class InitCommand extends Command {
 	protected function configure()
 	{
 		$this->setName('init')
-                  ->setDescription('Create a stub Homestead.yaml file');
+                  ->setDescription('Create a stub HomesteadPlus.yaml file');
 	}
 
 	/**
@@ -34,12 +34,12 @@ class InitCommand extends Command {
 
 		mkdir(homestead_path());
 
-		copy(__DIR__.'/stubs/Homestead.yaml', homestead_path().'/Homestead.yaml');
+		copy(__DIR__.'/stubs/HomesteadPlus.yaml', homestead_path().'/HomesteadPlus.yaml');
 		copy(__DIR__.'/stubs/after.sh', homestead_path().'/after.sh');
 		copy(__DIR__.'/stubs/aliases', homestead_path().'/aliases');
 
-		$output->writeln('<comment>Creating Homestead.yaml file...</comment> <info>✔</info>');
-		$output->writeln('<comment>Homestead.yaml file created at:</comment> '.homestead_path().'/Homestead.yaml');
+		$output->writeln('<comment>Creating HomesteadPlus.yaml file...</comment> <info>✔</info>');
+		$output->writeln('<comment>HomesteadPlus.yaml file created at:</comment> '.homestead_path().'/HomesteadPlus.yaml');
 	}
 
 }

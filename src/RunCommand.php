@@ -1,4 +1,4 @@
-<?php namespace Laravel\Homestead;
+<?php namespace Belusic\HomesteadPlus;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Command\Command;

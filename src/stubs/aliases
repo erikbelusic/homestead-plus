@@ -27,3 +27,8 @@ function serve-hhvm() {
 		echo "  serve-hhvm domain path"
 	fi
 }
+
+# Homestead Plus aliases
+alias artisan='php artisan'
+alias t="vendor/bin/codecept run"
+alias tf="vendor/bin/codecept run functional"

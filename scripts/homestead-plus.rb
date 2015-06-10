@@ -1,5 +1,5 @@
-class Homestead
-  def Homestead.configure(config, settings)
+class HomesteadPlus
+  def HomesteadPlus.configure(config, settings)
     # Set The VM Provider
     ENV['VAGRANT_DEFAULT_PROVIDER'] = settings["provider"] ||= "virtualbox"
 
@@ -11,14 +11,14 @@ class Homestead
 
     # Configure The Box
     config.vm.box = "laravel/homestead"
-    config.vm.hostname = settings["hostname"] ||= "homestead"
+    config.vm.hostname = settings["hostname"] ||= "homestead-plus"
 
     # Configure A Private Network IP
-    config.vm.network :private_network, ip: settings["ip"] ||= "192.168.10.10"
+    config.vm.network :private_network, ip: settings["ip"] ||= "192.168.10.12"
 
     # Configure A Few VirtualBox Settings
     config.vm.provider "virtualbox" do |vb|
-      vb.name = 'homestead'
+      vb.name = 'homestead-plus'
       vb.customize ["modifyvm", :id, "--memory", settings["memory"] ||= "2048"]
       vb.customize ["modifyvm", :id, "--cpus", settings["cpus"] ||= "1"]
       vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
@@ -156,6 +156,68 @@ class Homestead
           settings["blackfire"][0]["client-id"],
           settings["blackfire"][0]["client-token"]
         ]
+      end
+    end
+
+    # Local Machine Hosts
+    #
+    # If the Vagrant plugin hostsupdater (https://github.com/cogitatio/vagrant-hostsupdater) is
+    # installed, the following will automatically configure your local machine's hosts file to
+    # be aware of the domains specified below. Watch the provisioning script as you may need to
+    # enter a password for Vagrant to access your hosts file.
+    #
+    # By default, we'll include the domains set up by VVV through the vvv-hosts file
+    # located in the www/ directory.
+    #
+    # Other domains can be automatically added by including a vvv-hosts file containing
+    # individual domains separated by whitespace in subdirectories of www/.
+    if defined?(VagrantPlugins::HostsUpdater)
+      # Define hosts array
+      hosts = Array.new
+
+      # Get site domains from configuration
+      settings["sites"].each do |site|
+        hosts.push(site["map"])
+      end
+
+      # Pass the found host names to the hostsupdater plugin so it can perform magic.
+      config.hostsupdater.aliases = hosts
+      config.hostsupdater.remove_on_suspend = true
+    end
+
+    # /srv/database/
+    #
+    # If a database directory exists in the same directory as your Vagrantfile,
+    # a mapped directory inside the VM will be created that contains these files.
+    # This directory is used to maintain default database scripts as well as backed
+    # up mysql dumps (SQL files) that are to be imported automatically on vagrant up
+    config.vm.synced_folder "database/", "/srv/database"
+
+    # /srv/config/
+    #
+    # If a server-conf directory exists in the same directory as your Vagrantfile,
+    # a mapped directory inside the VM will be created that contains these files.
+    # This directory is currently used to maintain default config files for provisioning.
+    config.vm.synced_folder "config/", "/srv/config"
+
+    # Vagrant Triggers
+    #
+    # If the vagrant-triggers plugin is installed, we can run various scripts on Vagrant
+    # state changes like `vagrant up`, `vagrant halt`, `vagrant suspend`, and `vagrant destroy`
+    #
+    # These scripts are run on the host machine, so we use `vagrant ssh` to tunnel back
+    # into the VM and execute things. By default, each of these scripts calls db_backup
+    # to create backups of all current databases. This can be overridden with custom
+    # scripting. See the individual files in config/homebin/ for details.
+    if defined? VagrantPlugins::Triggers
+      config.trigger.before :halt, :stdout => true do
+        run "vagrant ssh -c 'vagrant_halt'"
+      end
+      config.trigger.before :suspend, :stdout => true do
+        run "vagrant ssh -c 'vagrant_suspend'"
+      end
+      config.trigger.before :destroy, :stdout => true do
+        run "vagrant ssh -c 'vagrant_destroy'"
       end
     end
   end
