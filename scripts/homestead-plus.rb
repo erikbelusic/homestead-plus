@@ -7,7 +7,8 @@ class HomesteadPlus
     scriptDir = File.dirname(__FILE__)
 
     # Prevent TTY Errors
-    config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+    # commented out because this line breaks my vagrant triggers
+    # config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
     # Configure The Box
     config.vm.box = "laravel/homestead"
@@ -217,7 +218,7 @@ class HomesteadPlus
         run "vagrant ssh -c 'vagrant_suspend'"
       end
       config.trigger.before :destroy, :stdout => true do
-        run "vagrant ssh -c 'vagrant_destroy'"
+        #run "vagrant ssh -c 'vagrant_destroy'"
       end
     end
   end
