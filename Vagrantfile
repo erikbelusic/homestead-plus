@@ -8,7 +8,7 @@ homesteadYamlPath = confDir + "/HomesteadPlus.yaml"
 afterScriptPath = confDir + "/after.sh"
 aliasesPath = confDir + "/aliases"
 customProvisionPath = File.expand_path("./scripts/custom-provision.sh")
-customImportPath = File.expand_path("./scripts/import-sql.sh")
+customImportPath = File.expand_path("./scripts/import-mysql.sh")
 
 require File.expand_path(File.dirname(__FILE__) + '/scripts/homestead-plus.rb')
 
